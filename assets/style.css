@@ -48,7 +48,12 @@ body {
   align-items: start;
   min-height: 100vh;
 }
+.red_btn{
+  border-color: red;
+  padding:5px;
+  color: red;
 
+}
 .footer {
   display: flex;
   flex-flow: row wrap;

@@ -1,7 +1,7 @@
 <?php
-require('../includes/connection.inc.php');
- $sql="select * from categories order by categories desc";
- $res=mysqli_query($con,$sql);
+ require('../includes/connection.inc.php');
+ require('../includes/getProduct.php');
+ 
 
 ?>
 <!DOCTYPE html>
@@ -22,7 +22,7 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 }
 .products_page{
     margin:50px;
-    padding: 30px;
+    padding: 40px;
     box-shadow: 0px 0px 12px rgb(184, 217, 230);
     border-radius: 7px;
     display: grid;
@@ -90,20 +90,9 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 
     </style>
     <div class="products_page">
-        <?php while($row=mysqli_fetch_assoc($res)){?>
-        <div class="product">
-            <img class="product_img" src="../assets/img/<?php echo $row['image']?>.jpg" alt="Tomatoes">
-            <div class="product_info">
-            <p style="font-size: 13px;"><u><?php echo $row['vendor']?></u></p>
-            <p style="font-weight: 1000; font-size: large;"><?php echo $row['product_name']?></p>
-            <p ><span style="color: orangered;">&#9733 &#9733 &#9733 &#9733</span> &#9734  <span>(3 reviews)</span></p>
-            <p><?php echo $row['unit']?>kg</p>
-            <p><span style="font-weight: 1000; font-size: large;">&#8377 <?php echo $row['selling_price']?> </span><span style="font-size:small;"><s>&#8377 <?php echo $row['mrp']?></s></span></p>
-            <button class="AddToCart" ><span>&#x1F6D2</span> Add to cart</button> 
-            <span class="wishlist">&hearts;</span>     
-        </div>
-        </div>
-        <?php } ?>
+    <?php
+          getProduct();  
+        ?>
         <div class="product">
             <img class="product_img" src="../assets/img/product-2.jpg" alt="Potatoes">
             <div class="product_info">
