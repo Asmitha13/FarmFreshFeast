@@ -11,49 +11,11 @@
 0.7.3/leaflet.css"/>
 <script src = "http://cdn.leafletjs.com/leaflet-
 0.7.3/leaflet.js"></script>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
-.category_list{
-    display:flex;   
-    flex-direction: row;
-    justify-content: space-between;
-    padding:15px 200px;
-    background-color: #F2F1EB;
-   
-}
-.category_list li{
-    list-style: none;
-}
-.category_list li a{
-    text-decoration: none;
-    color:black;
-}
-</style>
+
+
 </head>
 <body>
-    <div class="search_div">
-        <input type="text" id="search_bar" name="search_bar" style="width: 55%;" class="textBox" >
-        <button type="cart_button" style="width: 20%; " class="green_button"><img src="../assets/icons/cart.svg" class="icons"><span> item(s)-$0</span></button>
-        <button type="cart_button" style="width: 20%; " class="cream_button"><img src="../assets/icons/map_direction.svg" class="icons"><span> Search Location</span></button>
-    </div>
-    <div>
-       
-        <ul class="category_list">
-            <div style="background-color:#88AB8E ; padding:10px; margin:-12px 0; border-radius:20px; color:white;">Select By Catergory ></div>
-            <?php 
-                $sql="Select * from `categories`";
-                $res=mysqli_query($con,$sql);
-                
-                while($row_data=mysqli_fetch_assoc($res))
-                {
-                    $category_title=$row_data['category_name'];
-                    $category_id=$row_data['category_id'];
-                echo "<li><a href='Products.php?category=$category_id'>$category_title</a></li>";
-                } 
-            ?>
-        </ul>
-    
-    </div>
+<?php require('../includes/search.php'); ?>
     <div class="main">
     <div class="item">
         <img src="../assets/img/product-1.jpg" alt="coriander" width=40%;>
@@ -142,6 +104,9 @@
     </div>
 </div>
 </div>
+<?php
+            require('../includes/footer.inc.php');
+        ?>
     <script>
     // Creating map options
     var mapOptions = {

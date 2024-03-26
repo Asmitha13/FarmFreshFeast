@@ -4,6 +4,40 @@
    {
     $product_name=$_POST['product_name'];
     $category=$_POST['category'];
+    if($category!="other")
+    {
+    $name_id="Select `category_id` from categories where `category_name`='$category'";
+    $res_name_id=mysqli_query($con,$name_id);
+    if ($res_name_id->num_rows > 0) {
+        while($row = $res_name_id->fetch_assoc()) {
+          $category_id = $row["category_id"];
+        }
+      }
+    }
+    else{
+        $other_category=$_POST['other_category'];
+        if($other_category!="")
+        {
+            $check="Select * from `categories` where `category_name`='$other_category'";
+            $res_check=mysqli_query($con,$check);
+            if ($res_check->num_rows > 0) {
+            while($row = $res_check->fetch_assoc()) {
+              $category_id = $row["category_id"];
+             }
+            }
+            else{
+            $insert_category="INSERT INTO `categories`( `category_name`) VALUES ('$other_category')";
+            $res=mysqli_query($con,$insert_category);
+            if($res)
+            {
+                $category=$_POST['other_category'];
+                $max="Select MAX(category_id) AS max-id FROM categories";
+                $res_max=mysqli_query($con,$max);
+                $category_id=$max_id+1;
+            }
+        }
+        }
+    }
     $selling_price=$_POST['selling_price'];
     $mrp=$_POST['mrp'];
     $quantity_available=$_POST['quantity_available'];
@@ -13,31 +47,29 @@
     $product_status='true';
     $image=$_FILES['image']['name'];
     $temp_image=$_FILES['image']['tmp_name'];
+    $video=$_FILES['video']['name'];
+    $temp_video=$_FILES['video']['tmp_name'];
     $other_category=$_POST['other_category'];
 
     if($image!="")
     {
         //move_uploaded_file($temp_image,"./img/$temp_image");
         move_uploaded_file($temp_image,"./img/$image");
-        $insert_products="Insert into `product` (categories_id,product_name,mrp,price,qty,qty_available,image,description,status) values ('$category','$product_name','$mrp','$selling_price','$quantity_available','$minimum_order','$image','$description','$product_status')";
+    }
+    if($video!="")
+    {
+        move_uploaded_file($temp_video,"./video/$video");
+    }
+        $insert_products="Insert into `product` (categories_id,product_name,mrp,price,min_order,qty_available,image,video,description,status) values ('$category_id','$product_name','$mrp','$selling_price','$quantity_available','$minimum_order','$image','$video','$description','$product_status')";
 
-        //$insert_products="Insert into `product` (categories_id,product_name,mrp,price,qty,qty_available,image,description,status) values ('$category,'$product_name','$mrp','$selling_price','$quantity_available','$minimum_order','$image','$description','$product_status')";
+        //$insert_products="Insert into `product` (categories_id,product_name,mrp,price,qty,qty_available,image,description,status) values ('$category,'$product_name','$mrp','$selling_price','$quantity_available','$minimum_order','$image','$video','$description','$product_status')";
         $res=mysqli_query($con,$insert_products);
         if($res)
         {
             echo "<script>alert('Successfully inserted')</script>";
         }
-    }
-    if($other_category!="")
-    {
-       
-        $insert_category="INSERT INTO `categories`( `category_name`) VALUES ('$other_category')";
-        $res=mysqli_query($con,$insert_category);
-        if($res)
-        {
-            echo "<script>alert('Successfully category inserted')</script>";
-        }
-    }
+    
+    
    }
 ?>
 <!DOCTYPE html>
@@ -47,6 +79,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        table{
+            margin: 0 auto;
+        }
         body{
             background-color: #F2F1EB;
         }
@@ -58,32 +93,21 @@
             font-size:40px;
             font-weight:500;
         }
-        form{
-            margin:0 250px;
-        }
-        .col1{
-            width:80%;
-        }
         label{
             font-size: 1.2rem;
         }
-        input ,table{
-            width:100%;
+        .border{
+            border-radius: 30px;
+            border:1px solid black;
         }
-        td {
-            padding: 30px 15px;
-        }
-     
         input{
             height:1.4rem;
             font-size: 15px;
             width:100%;
             padding:5px 15px;
         }
-      
-        .border{
-            border-radius: 30px;
-            border:1px solid black;
+        td {
+            padding: 20px 15px;
         }
         .btn{
             width:200px;
@@ -96,26 +120,15 @@
         .btn:hover{
             background-color:#DCDAF2;
         }
-        #otherField td{
-            padding: 30px 15px;
-        }
-        #otherField input {
-            width: 100%;
-            height:1.4rem;
-            font-size: 15px;
-            padding:5px 15px;
-            border-radius: 30px;
-            border:1px solid black;
-        }
-        #otherField {
+        #otherField{
             display: none;
         }
-        #otherField td{
-            width:100%;
+        .otherField-input{
+            display: none;
         }
-
-
+      
     </style>
+
     
 
 </head>
@@ -148,15 +161,16 @@
                         $category_id=$row_data['category_id'];
                         echo "<option value='$category_title' >$category_title</option> ";
                     }
+                    
                 ?>
                 <option value='other'>other</option>
                 </select>
                 </td>
             </tr>
 
-            <tr id="otherField" style="width:100%;">
-                <td> <label for="other_category">Other Category</label></td>
-                <td> <input type="text" id="other_category" name="other_category"></td>
+            <tr >
+                <td colspan="2" id="otherField"> <label for="other_category">Other Category</label></td>
+                <td><input type="text" id="other_category" name="other_category" class="border otherField-input"  ></td>
             </tr>
             <tr>
                 <td><label for="selling_price">Selling Price</label></td>
@@ -164,7 +178,7 @@
             </tr>
 
             <tr>
-                <td> <label for="mrp">Maximum Retail Price(MRP)</label></td>
+                <td> <label for="mrp">Maximum Retail Price (MRP)</label></td>
                 <td><input type="number"  min="0" id="mrp" name="mrp" class="border"></td>
            </tr>
 
@@ -216,10 +230,13 @@
 function showOtherField() {
     var select = document.getElementById("category");
     var otherField = document.getElementById("otherField");
+    var otherField_input = document.querySelector(".otherField-input");
     if (select.value === "other") {
         otherField.style.display = "block";
+        otherField_input.style.display = "block";
     } else {
         otherField.style.display = "none";
+        otherField_input.style.display = "none";
     }
 }
 </script>

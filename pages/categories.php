@@ -1,7 +1,7 @@
 <?php
  require('../includes/connection.inc.php');
  require('../includes/getProduct.php');
- 
+ require('../includes/showProduct.php');
 
 ?>
 <!DOCTYPE html>
@@ -10,15 +10,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    
 </head>
 <body>
     <style>
         *{
-    padding:0;
+    
     margin:0;
+    padding: 0;
     box-sizing: border-box;
 font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+a{
+    text-decoration: none;
+    color: black;
 }
 .products_page{
     margin:50px;
@@ -87,12 +92,31 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
     position: absolute;
     right:0;
 }
+.product-container {
+    display: flex;
+    flex-direction: column;
+}
+
 
     </style>
+    <?php require('../includes/search.php'); 
+    showProduct();?>
     <div class="products_page">
-    <?php
-          getProduct();  
-        ?>
+    
+         <!--/* echo '<div class="product-container">';
+          showProduct();
+          echo '<div>';
+          getProduct();
+          echo '</div>';
+          getProduct_categories();
+          echo '</div>';
+          */-->
+         
+            
+            <?php getProduct(); ?>
+            <?php getProduct_categories(); ?>
+          
+        <!--
         <div class="product">
             <img class="product_img" src="../assets/img/product-2.jpg" alt="Potatoes">
             <div class="product_info">
@@ -176,12 +200,13 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
             <button class="AddToCart" ><span>&#x1F6D2</span> Add to cart</button> 
             <span class="wishlist">&hearts;</span>     
         </div>
-        </div>
+        </div> -->
        
     </div>
+    
     <?php
             require('../includes/footer.inc.php');
         ?>
-    <script src="script.js"></script>
+    
 </body>
 </html>
